@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PODODENT Lanzarote | Clínica Dental y Podológica</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --primary: #0A2540;
+      --primary-light: #1A4565;
+      --accent: #17A2B8;
+      --accent-light: #20C9D9;
+      --surface: #F8FAFC;
+      --surface-dark: #E2E8F0;
+      --text: #1A1A1A;
+      --text-light: #64748B;
+      --white: #FFFFFF;
+      --gradient-gold: linear-gradient(135deg, #17A2B8 0%, #20C9D9 50%, #17A2B8 100%);
+      --gradient-dark: linear-gradient(135deg, #0A2540 0%, #1A4565 100%);
+      --shadow-elevated: 0 24px 64px rgba(10, 37, 64, 0.15);
+      --shadow-dramatic: 0 40px 120px rgba(10, 37, 64, 0.3);
+      --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-2xl: 32px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ===== CURSOR ===== */
+    .cursor {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      mix-blend-mode: difference;
+    }
+    .cursor.hover { transform: scale(2); background: var(--accent); }
+    .cursor-follower {
+      width: 32px;
+      height: 32px;
+      background: rgba(23, 162, 184, 0.15);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      transition: transform 0.15s ease-out;
+    }
+
+    /* ===== PRELOADER ===== */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+    }
+    .preloader.hidden { transform: translateY(-100%); transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1); }
+    .preloader-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      color: var(--accent);
+      letter-spacing: 0.2em;
+    }
+    .preloader-bar {
+      width: 180px;
+      height: 2px;
+      background: rgba(255,255,255,0.1);
+      margin-top: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .preloader-progress {
+      position: absolute;
+      left: 0; top: 0;
+      height: 100%;
+      width: 0%;
+      background: var(--gradient-gold);
+      animation: loadProgress 1.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    @keyframes loadProgress { to { width: 100%; } }
+    .preloader-text {
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.75rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem 0;
+      z-index: 1000;
+      transition: var(--transition);
+      mix-blend-mode: difference;
+    }
+    .header.scrolled {
+      padding: 0.6rem 0;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      mix-blend-mode: normal;
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      gap: 0.25rem;
+    }
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .logo-text span { color: var(--accent); }
+    .header.scrolled .logo-text { color: var(--primary); }
+    .nav { display: flex; gap: 1.75rem; list-style: none; }
+    .nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .header.scrolled .nav a { color: var(--primary); }
+    .header-cta { display: flex; align-items: center; gap: 0.875rem; }
+    .phone-link {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .header.scrolled .phone-link { color: var(--primary); }
+    .phone-link i { width: 16px; height: 16px; }
+
+    /* ===== LANGUAGE SELECTOR ===== */
+    .lang-selector { position: relative; }
+    .lang-btn {
+      background: transparent;
+      border: 2px solid var(--white);
+      color: var(--white);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    .header.scrolled .lang-btn { border-color: var(--primary); color: var(--primary); }
+    .lang-btn:hover { background: var(--white); color: var(--primary); }
+    .header.scrolled .lang-btn:hover { background: var(--primary); color: var(--white); }
+    .lang-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-dramatic);
+      padding: 0.5rem;
+      min-width: 150px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s;
+    }
+    .lang-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+    .lang-option {
+      display: block;
+      width: 100%;
+      padding: 0.625rem 1rem;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: var(--text);
+      transition: var(--transition);
+    }
+    .lang-option:hover { background: var(--surface); color: var(--primary); }
+    .lang-option.active { background: var(--accent); color: var(--white); font-weight: 600; }
+
+    /* ===== MOBILE LANGUAGE SELECTOR ===== */
+    .mobile-lang-selector {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      z-index: 999;
+      display: none;
+    }
+    .mobile-lang-btn {
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-dark);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-elevated);
+      transition: var(--transition);
+    }
+    .mobile-lang-btn:hover { transform: scale(1.1); }
+    .mobile-lang-dropdown {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow-dramatic);
+      padding: 0.5rem;
+      min-width: 150px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s;
+    }
+    .mobile-lang-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10, 37, 64, 0.85) 0%, rgba(26, 69, 101, 0.75) 100%);
+      z-index: 2;
+    }
+    .hero-particles { position: absolute; inset: 0; z-index: 3; }
+    .hero-content {
+      position: relative;
+      z-index: 4;
+      text-align: center;
+      max-width: 850px;
+      padding: 0 2rem;
+      color: var(--white);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(23, 162, 184, 0.3);
+      border-radius: 50px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .hero-badge::after {
+      content: '';
+      width: 5px;
+      height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: 0.5; }
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 7vw, 4.5rem);
+      line-height: 1.05;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 .line { display: block; }
+    .hero h1 .line:nth-child(2) {
+      font-style: italic;
+      color: var(--accent);
+      font-size: 0.65em;
+      margin-top: 0.5rem;
+    }
+    .hero-description {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.75rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.5;
+    }
+    .hero-cta { display: flex; gap: 0.875rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 2rem;
+      background: var(--white);
+      color: var(--primary);
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      transition: var(--transition);
+      border: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn:hover {
+      background: var(--gradient-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(23, 162, 184, 0.3);
+      color: var(--white);
+    }
+    .btn-outline { background: transparent; border-color: var(--white); color: var(--white); }
+    .btn-outline:hover { background: var(--white); color: var(--primary); }
+    .hero-scroll {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 2s infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      50.1% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ===== SECCIONES ===== */
+    .section { padding: 3.5rem 0; position: relative; }
+    .section-dark { background: var(--primary); color: var(--white); }
+    .section-light { background: var(--white); }
+    .section-alt { background: var(--surface); }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 2.5rem; }
+    .section-header { text-align: center; max-width: 700px; margin: 0 auto 2rem; }
+    .section-tag {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      background: rgba(23, 162, 184, 0.15);
+      border: 1px solid var(--accent);
+      border-radius: 50px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-dark .section-tag { background: rgba(23, 162, 184, 0.2); }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4.5vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .section-header p {
+      font-size: 1rem;
+      color: var(--text-light);
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    .section-dark .section-header p { color: rgba(255,255,255,0.7); }
+
+    /* ===== ABOUT ===== */
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .about-images { position: relative; height: 550px; }
+    .about-img {
+      position: absolute;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-dramatic);
+    }
+    .about-img-1 { width: 70%; height: 55%; top: 0; left: 0; z-index: 2; }
+    .about-img-2 { width: 60%; height: 50%; bottom: 0; right: 0; z-index: 3; border: 5px solid var(--white); }
+    .about-img-3 { width: 40%; height: 35%; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 4; border: 5px solid var(--accent); }
+    .about-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s;
+    }
+    .about-img:hover img { transform: scale(1.1); }
+    .about-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      margin-bottom: 1rem;
+      line-height: 1.15;
+    }
+    .about-content h2 span { color: var(--accent); font-style: italic; }
+    .about-text {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .about-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .about-stat {
+      text-align: center;
+      padding: 1.25rem 0.75rem;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--surface-dark);
+    }
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .about-values { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+    .value-item {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .value-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-gold);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .value-text strong { display: block; color: var(--text); margin-bottom: 0.15rem; font-size: 0.95rem; }
+    .value-text span { font-size: 0.8rem; color: var(--text-light); line-height: 1.35; }
+
+    /* ===== SERVICIOS ===== */
+    .services { padding: 3.5rem 0; }
+    .services-wrapper { 
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .services-wrapper::-webkit-scrollbar { display: none; }
+    .services-horizontal { display: flex; gap: 1.25rem; padding: 0.75rem 2.5rem; width: max-content; }
+    .service-card {
+      width: 360px;
+      height: 500px;
+      position: relative;
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .service-card-bg { position: absolute; inset: 0; background: var(--gradient-dark); }
+    .service-card-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      transition: opacity 0.5s, transform 0.8s;
+    }
+    .service-card:hover .service-card-img { opacity: 0.4; transform: scale(1.08); }
+    .service-card-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.75rem;
+      background: linear-gradient(to top, rgba(10, 37, 64, 0.98), transparent);
+      color: var(--white);
+    }
+    .service-icon {
+      width: 55px;
+      height: 55px;
+      background: var(--gradient-gold);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    .service-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      margin-bottom: 0.6rem;
+    }
+    .service-card p {
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.75rem;
+    }
+    .service-link:hover { color: var(--white); }
+
+    /* ===== GALERÍA ===== */
+    .gallery { background: var(--primary); padding: 3.5rem 0; }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 250px;
+      gap: 1rem;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gallery-item:nth-child(4) { grid-column: span 2; }
+    .gallery-item:nth-child(5) { grid-row: span 2; }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s;
+    }
+    .gallery-item:hover img { transform: scale(1.12); }
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10, 37, 64, 0.9), transparent);
+      opacity: 0;
+      transition: opacity 0.5s;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      color: var(--white);
+    }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-overlay h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.3rem;
+    }
+    .gallery-overlay p { color: rgba(255,255,255,0.8); font-size: 0.85rem; }
+
+    /* ===== TESTIMONIOS ===== */
+    .testimonials { background: var(--surface); padding: 3.5rem 0; }
+    .testimonials-carousel { position: relative; height: 450px; perspective: 1000px; }
+    .testimonial-slide {
+      position: absolute;
+      width: 500px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: all 0.7s;
+      pointer-events: none;
+    }
+    .testimonial-slide.active { opacity: 1; transform: translateX(-50%) translateZ(0); pointer-events: all; }
+    .testimonial-slide.prev { opacity: 0.3; transform: translateX(-150%) translateZ(-200px) rotateY(15deg); }
+    .testimonial-slide.next { opacity: 0.3; transform: translateX(50%) translateZ(-200px) rotateY(-15deg); }
+    .testimonial-card {
+      background: var(--white);
+      border-radius: var(--radius-2xl);
+      padding: 2rem;
+      box-shadow: var(--shadow-dramatic);
+      text-align: center;
+    }
+    .testimonial-stars { color: var(--accent); font-size: 1.1rem; margin-bottom: 1.25rem; letter-spacing: 0.25rem; }
+    .testimonial-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .testimonial-author { display: flex; align-items: center; justify-content: center; gap: 0.875rem; }
+    .author-avatar {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid var(--accent);
+    }
+    .author-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .author-info strong { display: block; font-size: 1rem; color: var(--text); margin-bottom: 0.15rem; }
+    .author-info span { color: var(--text-light); font-size: 0.8rem; }
+    .testimonials-nav { display: flex; justify-content: center; gap: 0.625rem; margin-top: 1.5rem; }
+    .testimonials-btn {
+      width: 45px;
+      height: 45px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .testimonials-btn:hover { background: var(--primary); color: var(--white); transform: scale(1.08); }
+
+    /* ===== CONTACTO ===== */
+    .contact { background: var(--white); padding: 3.5rem 0; }
+    .contact::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 35%;
+      background: var(--gradient-dark);
+      z-index: 0;
+    }
+    .contact-container {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 0;
+      background: var(--white);
+      border-radius: var(--radius-2xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-dramatic);
+    }
+    .contact-info {
+      background: var(--gradient-dark);
+      padding: 2.5rem;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .contact-info h3 { font-family: 'Playfair Display', serif; font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .contact-info > p { color: rgba(255,255,255,0.85); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.5; }
+    .contact-details { display: flex; flex-direction: column; gap: 1.25rem; }
+    .contact-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .contact-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(23, 162, 184, 0.2);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .contact-text strong { display: block; margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .contact-text span, .contact-text a {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      line-height: 1.4;
+      display: block;
+      font-size: 0.85rem;
+    }
+    .contact-form-wrapper { padding: 2.5rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    .form-group { margin-bottom: 1rem; position: relative; }
+    .form-control {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--surface-dark);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      background: var(--surface);
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+      background: var(--white);
+    }
+    textarea.form-control { min-height: 100px; resize: vertical; }
+    .form-label {
+      position: absolute;
+      left: 1rem;
+      top: 0.875rem;
+      color: var(--text-light);
+      pointer-events: none;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+    .form-control:focus + .form-label,
+    .form-control:not(:placeholder-shown) + .form-label {
+      top: -0.45rem;
+      left: 0.75rem;
+      font-size: 0.7rem;
+      background: var(--white);
+      padding: 0 0.35rem;
+      color: var(--accent);
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: var(--gradient-gold);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(23, 162, 184, 0.3); }
+
+    /* ===== FOOTER ===== */
+    .footer { background: var(--primary); color: rgba(255,255,255,0.8); padding: 3rem 0 1.25rem; }
+    .footer-grid { display: grid; grid-template-columns: 1.8fr 1fr 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+    .footer-brand .logo { margin-bottom: 0.875rem; display: inline-flex; }
+    .footer-brand .logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .footer-brand .logo-text span { color: var(--accent); }
+    .footer-brand p { margin-bottom: 1.25rem; line-height: 1.6; max-width: 320px; font-size: 0.85rem; }
+    .footer-social { display: flex; gap: 0.625rem; }
+    .social-link {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .social-link:hover { background: var(--gradient-gold); border-color: var(--accent); color: var(--white); transform: translateY(-2px); }
+    .footer-links h4 { color: var(--white); margin-bottom: 1.25rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .footer-links ul { list-style: none; }
+    .footer-links a {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+      padding: 0.4rem 0;
+      transition: var(--transition);
+      font-size: 0.85rem;
+    }
+    .footer-links a:hover { color: var(--accent); padding-left: 1rem; }
+    .footer-bottom {
+      padding-top: 1.75rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .about-grid, .contact-container { grid-template-columns: 1fr; }
+      .about-images { height: 450px; order: -1; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      body { cursor: auto; }
+      .cursor, .cursor-follower { display: none; }
+    }
+    @media (max-width: 768px) {
+      .header-inner { padding: 0 1.25rem; }
+      .nav { display: none; }
+      .header-cta { gap: 0.75rem; }
+      .phone-link { font-size: 0.75rem; }
+      .phone-link span { display: none; }
+      .lang-selector { display: none; }
+      .mobile-lang-selector { display: block; }
+      .btn { padding: 0.75rem 1.25rem; font-size: 0.7rem; }
+      .footer-grid { grid-template-columns: 1fr; text-align: center; }
+      .footer-brand p { margin: 0 auto 1.25rem; }
+      .footer-social { justify-content: center; }
+      .footer-bottom { flex-direction: column; gap: 0.625rem; text-align: center; }
+      .service-card { width: 280px; height: 450px; }
+      .services-horizontal { padding: 0.75rem 1.25rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .contact-info, .contact-form-wrapper { padding: 1.75rem; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:nth-child(1), .gallery-item:nth-child(4), .gallery-item:nth-child(5) { grid-column: span 1; grid-row: span 1; }
+      .about-images { height: 400px; }
+      .about-img-1 { width: 75%; height: 50%; }
+      .about-img-2 { width: 65%; height: 45%; }
+      .about-img-3 { width: 45%; height: 35%; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 2rem; }
+      .hero-description { font-size: 0.95rem; }
+      .btn { padding: 0.7rem 1rem; font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <div class="preloader" id="preloader">
+    <div class="preloader-logo">PODODENT</div>
+    <div class="preloader-bar"><div class="preloader-progress"></div></div>
+    <div class="preloader-text">Cargando</div>
+  </div>
+
+  <header class="header" id="header">
+    <div class="header-inner">
+      <a href="#" class="logo">
+        <span class="logo-text">PODO<span>DENT</span></span>
+      </a>
+      <nav>
+        <ul class="nav">
+          <li><a href="#about" data-es="Nosotros" data-en="About Us" data-de="Über Uns">Nosotros</a></li>
+          <li><a href="#services" data-es="Servicios" data-en="Services" data-de="Leistungen">Servicios</a></li>
+          <li><a href="#gallery" data-es="Galería" data-en="Gallery" data-de="Galerie">Galería</a></li>
+          <li><a href="#team" data-es="Equipo" data-en="Team" data-de="Team">Equipo</a></li>
+          <li><a href="#contact" data-es="Contacto" data-en="Contact" data-de="Kontakt">Contacto</a></li>
+        </ul>
+      </nav>
+      <div class="header-cta">
+        <a href="tel:+34928395854" class="phone-link">
+          <i data-lucide="phone" style="width:16px;height:16px"></i>
+          <span>928 39 58 54</span>
+        </a>
+        <a href="#contact" class="btn"><span data-es="Pide Cita" data-en="Book Now" data-de="Termin">Pide Cita</span></a>
+        
+        <div class="lang-selector">
+          <button class="lang-btn" id="langBtn">
+            <span id="currentLang">ES</span>
+            <i data-lucide="chevron-down" style="width:14px;height:14px"></i>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <button class="lang-option active" data-lang="es">🇪🇸 Español</button>
+            <button class="lang-option" data-lang="en">🇬🇧 English</button>
+            <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-lang-selector">
+    <div class="mobile-lang-dropdown" id="mobileLangDropdown">
+      <button class="lang-option active" data-lang="es">🇪🇸 Español</button>
+      <button class="lang-option" data-lang="en">🇬🇧 English</button>
+      <button class="lang-option" data-lang="de">🇩🇪 Deutsch</button>
+    </div>
+    <button class="mobile-lang-btn" id="mobileLangBtn">
+      <i data-lucide="globe" style="width:24px;height:24px"></i>
+    </button>
+  </div>
+
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="clinica.mp4" type="video/mp4">
+    </video>
+    <div class="hero-bg"></div>
+    <canvas class="hero-particles" id="heroParticles"></canvas>
+    
+    <div class="hero-content">
+      <div class="hero-badge"><span data-es="30+ Años de Experiencia" data-en="30+ Years Experience" data-de="30+ Jahre Erfahrung">30+ Años de Experiencia</span></div>
+      <h1>
+        <div class="line" data-es="Tu sonrisa, nuestra pasión" data-en="Your smile, our passion" data-de="Ihr Lächeln, unsere Leidenschaft">Tu sonrisa, nuestra pasión</div>
+        <div class="line" data-es="Clínica dental y podológica integral" data-en="Comprehensive dental and podiatric clinic" data-de="Umfassende Zahn- und Fußklinik">Clínica dental y podológica integral</div>
+      </h1>
+      <p class="hero-description" data-es="Tecnología de vanguardia, especialistas cualificados y un compromiso inquebrantable con tu salud bucodental y podológica." data-en="State-of-the-art technology, qualified specialists and an unwavering commitment to your oral and podiatric health." data-de="Modernste Technologie, qualifizierte Spezialisten und ein unerschütterliches Engagement für Ihre Mund- und Fußgesundheit.">
+        Tecnología de vanguardia, especialistas cualificados y un compromiso inquebrantable con tu salud bucodental y podológica.
+      </p>
+      <div class="hero-cta">
+        <a href="#services" class="btn"><span data-es="Tratamientos" data-en="Treatments" data-de="Behandlungen">Tratamientos</span><i data-lucide="arrow-right" style="width:14px;height:14px"></i></a>
+        <a href="tel:+34928395854" class="btn btn-outline"><span data-es="Urgencias" data-en="Emergency" data-de="Notfall">Urgencias</span></a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span data-es="Scroll" data-en="Scroll" data-de="Scroll">Scroll</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </section>
+
+  <section class="section section-light about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-images">
+          <div class="about-img about-img-1">
+            <img src="about-img-1.jpg" alt="PODODENT Lanzarote" onerror="this.src='https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=800&q=80'">
+          </div>
+          <div class="about-img about-img-2">
+            <img src="about-img-2.jpg" alt="Equipo médico" onerror="this.src='https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80'">
+          </div>
+          <div class="about-img about-img-3">
+            <img src="about-img-3.jpg" alt="Tecnología dental" onerror="this.src='https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80'">
+          </div>
+        </div>
+        
+        <div class="about-content">
+          <div class="section-tag" style="text-align:left;display:inline-block" data-es="Sobre Nosotros" data-en="About Us" data-de="Über Uns">Sobre Nosotros</div>
+          <h2 data-es="Excelencia profesional <span>desde 1987</span>" data-en="Professional excellence <span>since 1987</span>" data-de="Professionelle Exzellenz <span>seit 1987</span>">Excelencia profesional <span>desde 1987</span></h2>
+          <p class="about-text" data-es="Nuestro equipo está formado por profesionales sanitarios de las mejores universidades españolas, con especializaciones en centros de prestigio nacional e internacional. Ofrecemos tratamientos de vanguardia en odontología, podología y fisioterapia." data-en="Our team consists of healthcare professionals from the best Spanish universities, with specializations in prestigious national and international centers. We offer cutting-edge treatments in dentistry, podiatry and physiotherapy." data-de="Unser Team besteht aus Gesundheitsfachkräften der besten spanischen Universitäten mit Spezialisierungen in renommierten nationalen und internationalen Zentren. Wir bieten modernste Behandlungen in Zahnmedizin, Podologie und Physiotherapie.">
+            Nuestro equipo está formado por profesionales sanitarios de las mejores universidades españolas, con especializaciones en centros de prestigio nacional e internacional. Ofrecemos tratamientos de vanguardia en odontología, podología y fisioterapia.
+          </p>
+          
+          <div class="about-stats">
+            <div class="about-stat">
+              <span class="stat-number" data-count="30">0</span>
+              <span class="stat-label" data-es="Años de Experiencia" data-en="Years Experience" data-de="Jahre Erfahrung">Años de Experiencia</span>
+            </div>
+            <div class="about-stat">
+              <span class="stat-number" data-count="4">0</span>
+              <span class="stat-label" data-es="Especialistas" data-en="Specialists" data-de="Spezialisten">Especialistas</span>
+            </div>
+            <div class="about-stat">
+              <span class="stat-number" data-count="100">0</span>
+              <span class="stat-label" data-es="Formación Continua" data-en="Ongoing Training" data-de="Fortbildung">Formación Continua</span>
+            </div>
+          </div>
+
+          <div class="about-values">
+            <div class="value-item">
+              <div class="value-icon">🦷</div>
+              <div class="value-text">
+                <strong data-es="Odontología Integral" data-en="Comprehensive Dentistry" data-de="Umfassende Zahnmedizin">Odontología Integral</strong>
+                <span data-es="Desde prevención hasta rehabilitación compleja" data-en="From prevention to complex rehabilitation" data-de="Von Prävention bis komplexe Rehabilitation">Desde prevención hasta rehabilitación compleja</span>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">👣</div>
+              <div class="value-text">
+                <strong data-es="Podología Avanzada" data-en="Advanced Podiatry" data-de="Fortgeschrittene Podologie">Podología Avanzada</strong>
+                <span data-es="Cirugía percutánea y estudios biomecánicos" data-en="Percutaneous surgery and biomechanical studies" data-de="Perkutane Chirurgie und biomechanische Studien">Cirugía percutánea y estudios biomecánicos</span>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">🔬</div>
+              <div class="value-text">
+                <strong data-es="Tecnología 3D" data-en="3D Technology" data-de="3D-Technologie">Tecnología 3D</strong>
+                <span data-es="TAC Dental, escáner intraoral, CAD-CAM" data-en="Dental CT, intraoral scanner, CAD-CAM" data-de="Dental-CT, Intraoralscanner, CAD-CAM">TAC Dental, escáner intraoral, CAD-CAM</span>
+              </div>
+            </div>
+            <div class="value-item">
+              <div class="value-icon">💙</div>
+              <div class="value-text">
+                <strong data-es="Compromiso Total" data-en="Total Commitment" data-de="Volles Engagement">Compromiso Total</strong>
+                <span data-es="Revisiones gratuitas de por vida" data-en="Free check-ups for life" data-de="Kostenlose Kontrollen lebenslang">Revisiones gratuitas de por vida</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-dark services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" data-es="Tratamientos" data-en="Treatments" data-de="Behandlungen">Tratamientos</div>
+        <h2 data-es="Servicios especializados para tu salud" data-en="Specialized services for your health" data-de="Spezialisierte Dienstleistungen für Ihre Gesundheit">Servicios especializados para tu salud</h2>
+        <p data-es="Cada tratamiento se estudia de forma individualizada para ofrecerte la mejor solución." data-en="Each treatment is studied individually to offer you the best solution." data-de="Jede Behandlung wird individuell untersucht, um Ihnen die beste Lösung anzubieten.">Cada tratamiento se estudia de forma individualizada para ofrecerte la mejor solución.</p>
+      </div>
+    </div>
+    
+    <div class="services-wrapper">
+      <div class="services-horizontal" id="servicesHorizontal">
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1606811841689-23dfddce3e95?auto=format&fit=crop&w=600&q=80" alt="Implantología" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">🦷</div>
+            <h3 data-es="Implantología" data-en="Implantology" data-de="Implantologie">Implantología</h3>
+            <p data-es="Expertos en devolverte la sonrisa con técnicas ALL-on-4, carga inmediata e implantes postextracción." data-en="Experts in restoring your smile with ALL-on-4 techniques, immediate loading and post-extraction implants." data-de="Experten darin, Ihr Lächeln mit ALL-on-4-Techniken, Sofortbelastung und Post-Extraktions-Implantaten wiederherzustellen.">Expertos en devolverte la sonrisa con técnicas ALL-on-4, carga inmediata e implantes postextracción.</p>
+            <a href="#contact" class="service-link" data-es="Más info <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="More info <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Mehr Info <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Más info <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1588776814546-daab14f727b5?auto=format&fit=crop&w=600&q=80" alt="Ortodoncia Invisible" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">✨</div>
+            <h3 data-es="Ortodoncia Invisible" data-en="Invisible Orthodontics" data-de="Unsichtbare Kieferorthopädie">Ortodoncia Invisible</h3>
+            <p data-es="Ortopedia funcional, ortodoncia infantil, estética e invisible con certificación INVISALIGN." data-en="Functional orthopedics, pediatric, aesthetic and invisible orthodontics with INVISALIGN certification." data-de="Funktionelle Orthopädie, Kinder-, ästhetische und unsichtbare Kieferorthopädie mit INVISALIGN-Zertifizierung.">Ortopedia funcional, ortodoncia infantil, estética e invisible con certificación INVISALIGN.</p>
+            <a href="#contact" class="service-link" data-es="Descubre <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="Discover <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Entdecken <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Descubre <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=600&q=80" alt="Estética Dental" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">💎</div>
+            <h3 data-es="Estética Dental" data-en="Dental Aesthetics" data-de="Zahnästhetik">Estética Dental</h3>
+            <p data-es="Carillas de porcelana, blanqueamiento, diseño de sonrisa y rellenos con ácido hialurónico." data-en="Porcelain veneers, whitening, smile design and hyaluronic acid fillers." data-de="Porzellan-Veneers, Bleaching, Smile-Design und Hyaluronsäure-Filler.">Carillas de porcelana, blanqueamiento, diseño de sonrisa y rellenos con ácido hialurónico.</p>
+            <a href="#contact" class="service-link" data-es="Transforma <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="Transform <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Verwandeln <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Transforma <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80" alt="Cirugía del Pie" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">👣</div>
+            <h3 data-es="Cirugía del Pie" data-en="Foot Surgery" data-de="Fußchirurgie">Cirugía del Pie</h3>
+            <p data-es="Técnicas de mínima incisión: juanetes, dedos en garra, espolón calcáreo con deambulación inmediata." data-en="Minimal incision techniques: bunions, hammer toes, heel spurs with immediate ambulation." data-de="Minimalinvasive Techniken: Hallux valgus, Hammerzehen, Fersensporn mit sofortiger Gehfähigkeit.">Técnicas de mínima incisión: juanetes, dedos en garra, espolón calcáreo con deambulación inmediata.</p>
+            <a href="#contact" class="service-link" data-es="Consulta <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="Consult <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Beraten <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Consulta <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80" alt="Endodoncia" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">🔬</div>
+            <h3 data-es="Endodoncia" data-en="Endodontics" data-de="Endodontie">Endodoncia</h3>
+            <p data-es="Tratamiento conservador de conductos evitando infecciones y dolor posterior con tecnología avanzada." data-en="Conservative root canal treatment avoiding infections and subsequent pain with advanced technology." data-de="Konservative Wurzelkanalbehandlung zur Vermeidung von Infektionen und nachfolgenden Schmerzen mit fortschrittlicher Technologie.">Tratamiento conservador de conductos evitando infecciones y dolor posterior con tecnología avanzada.</p>
+            <a href="#contact" class="service-link" data-es="Saber más <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="Learn more <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Mehr erfahren <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Saber más <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+
+        <div class="service-card">
+          <div class="service-card-bg"></div>
+          <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=600&q=80" alt="Fisioterapia" class="service-card-img">
+          <div class="service-card-content">
+            <div class="service-icon">🏃</div>
+            <h3 data-es="Fisioterapia" data-en="Physiotherapy" data-de="Physiotherapie">Fisioterapia</h3>
+            <p data-es="Masoterapia, Pilates, Kinesiotaping, electroterapia, acupuntura y estudios biomecánicos digitalizados." data-en="Massage therapy, Pilates, Kinesiotaping, electrotherapy, acupuncture and digitalized biomechanical studies." data-de="Massagetherapie, Pilates, Kinesiotaping, Elektrotherapie, Akupunktur und digitalisierte biomechanische Studien.">Masoterapia, Pilates, Kinesiotaping, electroterapia, acupuntura y estudios biomecánicos digitalizados.</p>
+            <a href="#contact" class="service-link" data-es="Recupera <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-en="Recover <i data-lucide='arrow-right' style='width:12px;height:12px'></i>" data-de="Erholen <i data-lucide='arrow-right' style='width:12px;height:12px'></i>">Recupera <i data-lucide="arrow-right" style="width:12px;height:12px"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gallery" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" style="background:rgba(255,255,255,0.1);color:var(--white)" data-es="Instalaciones" data-en="Facilities" data-de="Einrichtungen">Instalaciones</div>
+        <h2 style="color:var(--white)" data-es="Tecnología de vanguardia" data-en="State-of-the-art technology" data-de="Modernste Technologie">Tecnología de vanguardia</h2>
+        <p style="color:rgba(255,255,255,0.7)" data-es="Equipamiento avanzado para diagnósticos precisos y tratamientos efectivos" data-en="Advanced equipment for accurate diagnostics and effective treatments" data-de="Fortschrittliche Ausstattung für präzise Diagnostik und effektive Behandlungen">Equipamiento avanzado para diagnósticos precisos y tratamientos efectivos</p>
+      </div>
+      
+      <div class="gallery-grid">
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80" alt="Recepción"><div class="gallery-overlay"><h3 data-es="Recepción" data-en="Reception" data-de="Empfang">Recepción</h3><p data-es="Ambiente acogedor" data-en="Welcoming atmosphere" data-de="Einladende Atmosphäre">Ambiente acogedor</p></div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=80" alt="Consultas"><div class="gallery-overlay"><h3 data-es="Consultas" data-en="Consultations" data-de="Beratungen">Consultas</h3><p data-es="Equipamiento moderno" data-en="Modern equipment" data-de="Moderne Ausstattung">Equipamiento moderno</p></div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80" alt="TAC 3D"><div class="gallery-overlay"><h3 data-es="TAC Dental 3D" data-en="3D Dental CT" data-de="3D Dental-CT">TAC Dental 3D</h3><p data-es="Diagnóstico preciso" data-en="Precise diagnosis" data-de="Präzise Diagnose">Diagnóstico preciso</p></div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80" alt="Escáner"><div class="gallery-overlay"><h3 data-es="Escáner Intraoral" data-en="Intraoral Scanner" data-de="Intraoralscanner">Escáner Intraoral</h3><p data-es="Impresiones digitales" data-en="Digital impressions" data-de="Digitale Abdrücke">Impresiones digitales</p></div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1666224494127-8b1e27b4f4d4?auto=format&fit=crop&w=800&q=80" alt="CAD-CAM"><div class="gallery-overlay"><h3 data-es="CAD-CAM" data-en="CAD-CAM" data-de="CAD-CAM">CAD-CAM</h3><p data-es="Prótesis a medida" data-en="Custom prosthetics" data-de="Maßgefertigte Prothesen">Prótesis a medida</p></div></div>
+        <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80" alt="Arrecife"><div class="gallery-overlay"><h3 data-es="Ubicación" data-en="Location" data-de="Standort">Ubicación</h3><p data-es="Arrecife, Lanzarote" data-en="Arrecife, Lanzarote" data-de="Arrecife, Lanzarote">Arrecife, Lanzarote</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section testimonials" id="team">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag" data-es="Nuestro Equipo" data-en="Our Team" data-de="Unser Team">Nuestro Equipo</div>
+        <h2 data-es="Profesionales altamente cualificados" data-en="Highly qualified professionals" data-de="Hochqualifizierte Fachkräfte">Profesionales altamente cualificados</h2>
+        <p data-es="Especialistas formados en las mejores universidades con experiencia internacional" data-en="Specialists trained in the best universities with international experience" data-de="Spezialisten, ausgebildet an den besten Universitäten mit internationaler Erfahrung">Especialistas formados en las mejores universidades con experiencia internacional</p>
+      </div>
+      
+      <div class="testimonials-carousel" id="teamCarousel">
+        <div class="testimonial-slide active">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">🦷</div>
+            <p class="testimonial-text" style="font-size:1.1rem;margin-bottom:1rem"><strong>Dra. Ana Martins</strong></p>
+            <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:1rem">Directora Médica • Odontología y Podología</p>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1.5rem">Licenciada UCM Madrid • Máster Cirugía Oral, Implantología y Periodoncia • Especialista en Cirugía Mínimamente Invasiva</p>
+            <div class="testimonial-author">
+              <div class="author-info">
+                <strong data-es="Nº Colegiada: 35000904" data-en="License No: 35000904" data-de="Lizenz-Nr: 35000904">Nº Colegiada: 35000904</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-slide next">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">🦷</div>
+            <p class="testimonial-text" style="font-size:1.1rem;margin-bottom:1rem"><strong>Dra. Ana Rey</strong></p>
+            <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:1rem">Ortodoncista Especialista</p>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1.5rem">Máster en Ortodoncia UPS • Máster Endodoncia URJC • Certificación INVISALIGN • Experta en Ortodoncia Invisible</p>
+            <div class="testimonial-author">
+              <div class="author-info">
+                <strong data-es="Nº Colegiado: 28010605" data-en="License No: 28010605" data-de="Lizenz-Nr: 28010605">Nº Colegiado: 28010605</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">👣</div>
+            <p class="testimonial-text" style="font-size:1.1rem;margin-bottom:1rem"><strong>Dr. Jaime Yu</strong></p>
+            <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:1rem">Podólogo • Cirugía del Pie</p>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1.5rem">Cofundador Colegio Podólogos Canarias • Miembro AEMIS y AAFAS • +30 años de experiencia en cirugía podológica</p>
+            <div class="testimonial-author">
+              <div class="author-info">
+                <strong data-es="Nº Colegiado: 838350020" data-en="License No: 838350020" data-de="Lizenz-Nr: 838350020">Nº Colegiado: 838350020</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonial-slide">
+          <div class="testimonial-card">
+            <div class="testimonial-stars">🏃</div>
+            <p class="testimonial-text" style="font-size:1.1rem;margin-bottom:1rem"><strong>Dr. Hugo Lorenzo</strong></p>
+            <p style="font-size:0.9rem;color:var(--text-light);margin-bottom:1rem">Fisioterapeuta y Podólogo</p>
+            <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:1.5rem">Especialista en Acupuntura • Experto en Pie Diabético • Estudios Biomecánicos Digitalizados • Pilates y Rehabilitación</p>
+            <div class="testimonial-author">
+              <div class="author-info">
+                <strong data-es="Nº Colegiado: 838350130" data-en="License No: 838350130" data-de="Lizenz-Nr: 838350130">Nº Colegiado: 838350130</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonials-nav">
+        <button class="testimonials-btn" id="prevTeam"><i data-lucide="arrow-left" style="width:20px;height:20px"></i></button>
+        <button class="testimonials-btn" id="nextTeam"><i data-lucide="arrow-right" style="width:20px;height:20px"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact">
+    <div class="container">
+      <div class="contact-container">
+        <div class="contact-info">
+          <div>
+            <h3 data-es="Pide tu cita ahora" data-en="Book your appointment now" data-de="Vereinbaren Sie jetzt Ihren Termin">Pide tu cita ahora</h3>
+            <p data-es="Revisiones dentales GRATUITAS cada 6 meses durante TODA LA VIDA" data-en="FREE dental check-ups every 6 months for LIFE" data-de="KOSTENLOSE Zahnkontrollen alle 6 Monate LEBENSLANG">Revisiones dentales GRATUITAS cada 6 meses durante TODA LA VIDA</p>
+            
+            <div class="contact-details">
+              <div class="contact-item">
+                <div class="contact-icon">📍</div>
+                <div class="contact-text">
+                  <strong data-es="Ubicación" data-en="Location" data-de="Standort">Ubicación</strong>
+                  <span>Calle Cuba nº 9 LOCAL<br>Arrecife, Lanzarote 35500</span>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon">📞</div>
+                <div class="contact-text">
+                  <strong data-es="Teléfonos" data-en="Phones" data-de="Telefone">Teléfonos</strong>
+                  <a href="tel:+34928395854">928 39 58 54</a>
+                  <a href="tel:+34928804942">928 80 49 42</a>
+                  <a href="tel:+34650257064">650 25 70 64</a>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon">✉️</div>
+                <div class="contact-text">
+                  <strong data-es="Email" data-en="Email" data-de="E-Mail">Email</strong>
+                  <a href="mailto:info.pododentlanzarote@gmail.com">info.pododentlanzarote@gmail.com</a>
+                </div>
+              </div>
+              <div class="contact-item">
+                <div class="contact-icon">🕐</div>
+                <div class="contact-text">
+                  <strong data-es="Horario" data-en="Hours" data-de="Öffnungszeiten">Horario</strong>
+                  <span>Lun/Jue: 13:00-20:30<br>Mar/Mié: 9:00-17:00<br>Vie: 9:00-14:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="footer-social" style="margin-top:1.5rem">
+            <a href="#" class="social-link"><span>📘</span></a>
+            <a href="#" class="social-link"><span>📷</span></a>
+            <a href="#" class="social-link"><span>💬</span></a>
+          </div>
+        </div>
+
+        <div class="contact-form-wrapper">
+          <form id="contactForm">
+            <div class="form-row">
+              <div class="form-group"><input type="text" id="name" class="form-control" placeholder=" " required><label for="name" class="form-label" data-es="Nombre *" data-en="Name *" data-de="Name *">Nombre *</label></div>
+              <div class="form-group"><input type="tel" id="phone" class="form-control" placeholder=" " required><label for="phone" class="form-label" data-es="Teléfono *" data-en="Phone *" data-de="Telefon *">Teléfono *</label></div>
+            </div>
+            <div class="form-group"><input type="email" id="email" class="form-control" placeholder=" " required><label for="email" class="form-label" data-es="Email *" data-en="Email *" data-de="E-Mail *">Email *</label></div>
+            <div class="form-group">
+              <select id="service" class="form-control" style="cursor:pointer">
+                <option value="" data-es="Selecciona un tratamiento" data-en="Select a treatment" data-de="Wählen Sie eine Behandlung">Selecciona un tratamiento</option>
+                <option value="implantes" data-es="Implantología" data-en="Implantology" data-de="Implantologie">Implantología</option>
+                <option value="ortodoncia" data-es="Ortodoncia" data-en="Orthodontics" data-de="Kieferorthopädie">Ortodoncia</option>
+                <option value="estetica" data-es="Estética Dental" data-en="Dental Aesthetics" data-de="Zahnästhetik">Estética Dental</option>
+                <option value="podologia" data-es="Podología" data-en="Podiatry" data-de="Podologie">Podología</option>
+                <option value="fisioterapia" data-es="Fisioterapia" data-en="Physiotherapy" data-de="Physiotherapie">Fisioterapia</option>
+                <option value="urgencia" data-es="Urgencia" data-en="Emergency" data-de="Notfall">Urgencia</option>
+              </select>
+            </div>
+            <div class="form-group"><textarea id="message" class="form-control" placeholder=" "></textarea><label for="message" class="form-label" data-es="Mensaje" data-en="Message" data-de="Nachricht">Mensaje</label></div>
+            <div class="form-group">
+              <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;color:var(--text-light);font-size:0.8rem">
+                <input type="checkbox" required style="margin-top:0.2rem;width:14px;height:14px;accent-color:var(--accent)">
+                <span data-es="Acepto la" data-en="I accept the" data-de="Ich akzeptiere die">Acepto la</span> <a href="#" style="color:var(--accent)" data-es="Política de Privacidad" data-en="Privacy Policy" data-de="Datenschutzrichtlinie">Política de Privacidad</a> *
+              </label>
+            </div>
+            <button type="submit" class="submit-btn"><span data-es="Solicitar Cita" data-en="Request Appointment" data-de="Termin Anfordern">Solicitar Cita</span></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <span class="logo-text">PODO<span>DENT</span></span>
+          </a>
+          <p data-es="Clínica dental y podológica integral en Lanzarote. Más de 30 años cuidando de tu sonrisa y tu salud." data-en="Comprehensive dental and podiatric clinic in Lanzarote. More than 30 years caring for your smile and health." data-de="Umfassende Zahn- und Fußklinik auf Lanzarote. Mehr als 30 Jahre Fürsorge für Ihr Lächeln und Ihre Gesundheit.">Clínica dental y podológica integral en Lanzarote. Más de 30 años cuidando de tu sonrisa y tu salud.</p>
+          <div class="footer-social">
+            <a href="#" class="social-link"><span>📘</span></a>
+            <a href="#" class="social-link"><span>📷</span></a>
+            <a href="#" class="social-link"><span>💬</span></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4 data-es="Tratamientos" data-en="Treatments" data-de="Behandlungen">Tratamientos</h4>
+          <ul>
+            <li><a href="#services" data-es="Implantología" data-en="Implantology" data-de="Implantologie">Implantología</a></li>
+            <li><a href="#services" data-es="Ortodoncia" data-en="Orthodontics" data-de="Kieferorthopädie">Ortodoncia</a></li>
+            <li><a href="#services" data-es="Estética Dental" data-en="Dental Aesthetics" data-de="Zahnästhetik">Estética Dental</a></li>
+            <li><a href="#services" data-es="Podología" data-en="Podiatry" data-de="Podologie">Podología</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4 data-es="Clínica" data-en="Clinic" data-de="Klinik">Clínica</h4>
+          <ul>
+            <li><a href="#about" data-es="Sobre Nosotros" data-en="About Us" data-de="Über Uns">Sobre Nosotros</a></li>
+            <li><a href="#team" data-es="Equipo" data-en="Team" data-de="Team">Equipo</a></li>
+            <li><a href="#gallery" data-es="Instalaciones" data-en="Facilities" data-de="Einrichtungen">Instalaciones</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h4 data-es="Legal" data-en="Legal" data-de="Rechtliches">Legal</h4>
+          <ul>
+            <li><a href="#" data-es="Aviso Legal" data-en="Legal Notice" data-de="Impressum">Aviso Legal</a></li>
+            <li><a href="#" data-es="Privacidad" data-en="Privacy" data-de="Datenschutz">Privacidad</a></li>
+            <li><a href="#" data-es="Cookies" data-en="Cookies" data-de="Cookies">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 PODODENT Lanzarote. <span data-es="Todos los derechos reservados." data-en="All rights reserved." data-de="Alle Rechte vorbehalten.">Todos los derechos reservados.</span></p>
+        <p data-es="Diseñado con" data-en="Designed with" data-de="Entwickelt mit">Diseñado con</p> <span style="color:var(--accent)">❤</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // ===== LANGUAGE SELECTOR =====
+      const langBtn = document.getElementById('langBtn');
+      const langDropdown = document.getElementById('langDropdown');
+      const mobileLangBtn = document.getElementById('mobileLangBtn');
+      const mobileLangDropdown = document.getElementById('mobileLangDropdown');
+      const langOptions = document.querySelectorAll('.lang-option');
+      let currentLanguage = 'es';
+
+      function updateLanguage(lang) {
+        currentLanguage = lang;
+        
+        document.querySelectorAll('[data-es]').forEach(el => {
+          const key = 'data-' + lang;
+          if (el.getAttribute(key)) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+              if (el.placeholder) el.placeholder = el.getAttribute(key);
+            } else if (el.tagName === 'LABEL') {
+              el.textContent = el.getAttribute(key);
+            } else {
+              el.innerHTML = el.getAttribute(key);
+            }
+          }
+        });
+
+        langOptions.forEach(opt => {
+          opt.classList.remove('active');
+          if (opt.dataset.lang === lang) opt.classList.add('active');
+        });
+
+        langDropdown.classList.remove('active');
+        mobileLangDropdown.classList.remove('active');
+        document.documentElement.lang = lang;
+      }
+
+      langBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        langDropdown.classList.toggle('active');
+      });
+
+      document.querySelectorAll('.lang-dropdown .lang-option').forEach(option => {
+        option.addEventListener('click', () => updateLanguage(option.dataset.lang));
+      });
+
+      mobileLangBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileLangDropdown.classList.toggle('active');
+      });
+
+      document.querySelectorAll('.mobile-lang-dropdown .lang-option').forEach(option => {
+        option.addEventListener('click', () => updateLanguage(option.dataset.lang));
+      });
+
+      document.addEventListener('click', () => {
+        langDropdown.classList.remove('active');
+        mobileLangDropdown.classList.remove('active');
+      });
+
+      // CURSOR
+      const cursor = document.querySelector('.cursor');
+      const cursorFollower = document.querySelector('.cursor-follower');
+      
+      document.addEventListener('mousemove', (e) => {
+        cursor.style.left = e.clientX - 8 + 'px';
+        cursor.style.top = e.clientY - 8 + 'px';
+        setTimeout(() => {
+          cursorFollower.style.left = e.clientX - 16 + 'px';
+          cursorFollower.style.top = e.clientY - 16 + 'px';
+        }, 0);
+      });
+
+      const interactiveElements = document.querySelectorAll('a, button, .service-card, .gallery-item');
+      interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+      });
+
+      // PRELOADER
+      const preloader = document.getElementById('preloader');
+      setTimeout(() => {
+        preloader.classList.add('hidden');
+        initHeroAnimations();
+      }, 1600);
+
+      function initHeroAnimations() {
+        gsap.from('.hero-badge', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out' });
+        gsap.from('.hero h1 .line', { opacity: 0, y: 30, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.2 });
+        gsap.from('.hero-description', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out', delay: 0.5 });
+        gsap.from('.hero-cta', { opacity: 0, y: 20, duration: 0.6, ease: 'power3.out', delay: 0.7 });
+      }
+
+      // LENIS
+      const lenis = new Lenis({ duration: 0.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smooth: true });
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+
+      gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+      // HEADER
+      const header = document.getElementById('header');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 80) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+      });
+
+      // COUNTERS
+      const counters = document.querySelectorAll('[data-count]');
+      counters.forEach(counter => {
+        const target = parseInt(counter.dataset.count);
+        ScrollTrigger.create({
+          trigger: counter, start: 'top 85%', once: true,
+          onEnter: () => {
+            gsap.to(counter, {
+              innerHTML: target, duration: 1.5, ease: 'power2.out',
+              snap: { innerHTML: 1 },
+              onUpdate: function() { counter.innerHTML = Math.ceil(this.targets()[0].innerHTML); }
+            });
+          }
+        });
+      });
+
+      // SERVICES HORIZONTAL SCROLL
+      if (window.innerWidth > 768) {
+        const servicesSection = document.querySelector('.services');
+        const servicesHorizontal = document.getElementById('servicesHorizontal');
+        const scrollWidth = servicesHorizontal.scrollWidth - window.innerWidth;
+        
+        gsap.to(servicesHorizontal, {
+          x: () => -scrollWidth + 150,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: servicesSection,
+            start: 'top top',
+            end: () => `+=${scrollWidth}`,
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1
+          }
+        });
+      }
+
+      // GALLERY
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      galleryItems.forEach((item, i) => {
+        gsap.from(item, {
+          scrollTrigger: { trigger: item, start: 'top 90%' },
+          y: 50, opacity: 0, duration: 0.6, delay: i * 0.06, ease: 'power3.out'
+        });
+      });
+
+      // TEAM CAROUSEL
+      const teamSlides = document.querySelectorAll('#teamCarousel .testimonial-slide');
+      let currentTeam = 0;
+      
+      function updateTeam() {
+        teamSlides.forEach((slide, index) => {
+          slide.classList.remove('active', 'prev', 'next');
+          if (index === currentTeam) slide.classList.add('active');
+          else if (index === (currentTeam - 1 + teamSlides.length) % teamSlides.length) slide.classList.add('prev');
+          else if (index === (currentTeam + 1) % teamSlides.length) slide.classList.add('next');
+        });
+      }
+
+      document.getElementById('nextTeam').addEventListener('click', () => {
+        currentTeam = (currentTeam + 1) % teamSlides.length;
+        updateTeam();
+      });
+
+      document.getElementById('prevTeam').addEventListener('click', () => {
+        currentTeam = (currentTeam - 1 + teamSlides.length) % teamSlides.length;
+        updateTeam();
+      });
+
+      // FORM
+      document.getElementById('contactForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector('.submit-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<span>Enviando...</span>';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+          btn.innerHTML = '<span>✓ ¡Enviado!</span>';
+          btn.style.background = '#22c55e';
+          setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            btn.style.background = '';
+            e.target.reset();
+            alert('¡Gracias! Te contactaremos pronto.');
+          }, 1500);
+        }, 1200);
+      });
+
+      // SMOOTH SCROLL
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            gsap.to(window, { duration: 1, scrollTo: { y: target, offsetY: 60 }, ease: 'power3.inOut' });
+          }
+        });
+      });
+
+      // PARTICLES
+      initParticles();
+      
+      function initParticles() {
+        const canvas = document.getElementById('heroParticles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        class Particle {
+          constructor() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 2 + 0.5;
+            this.speedX = Math.random() * 0.4 - 0.2;
+            this.speedY = Math.random() * 0.4 - 0.2;
+            this.color = `rgba(23, 162, 184, ${Math.random() * 0.5})`;
+          }
+          update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            if (this.x > canvas.width) this.x = 0;
+            if (this.x < 0) this.x = canvas.width;
+            if (this.y > canvas.height) this.y = 0;
+            if (this.y < 0) this.y = canvas.height;
+          }
+          draw() {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+        function animate() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            for (let j = i; j < particles.length; j++) {
+              const dx = particles[i].x - particles[j].x;
+              const dy = particles[i].y - particles[j].y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < 100) {
+                ctx.beginPath();
+                ctx.strokeStyle = `rgba(23, 162, 184, ${0.1 * (1 - distance / 100)})`;
+                ctx.lineWidth = 0.5;
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+              }
+            }
+          }
+          requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
